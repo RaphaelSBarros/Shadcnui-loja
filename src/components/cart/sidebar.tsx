@@ -12,9 +12,12 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useCartStore } from "@/stores/cart-store";
-import { CartItem } from "./item";
+import { CartItem } from "@/components/cart/item";
+import { useState } from "react";
+import { CheckoutDialog } from "@/components/checkout/dialog";
 
 export const CartSideBar = () => {
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const { cart } = useCartStore((state) => state);
 
   let subtotal = 0;
@@ -39,8 +42,8 @@ export const CartSideBar = () => {
         </SheetHeader>
 
         <div className="flex flex-col gap-5 my-3">
-          {cart.map(item => (
-            <CartItem key={item.product.id} item={item}/>
+          {cart.map((item) => (
+            <CartItem key={item.product.id} item={item} />
           ))}
         </div>
 
@@ -54,8 +57,16 @@ export const CartSideBar = () => {
         <Separator className="my-4" />
 
         <div className="text-center">
-          <Button disabled={cart.length === 0}>Finalizar Compra</Button>
+          <Button
+            onClick={() => setCheckoutOpen(true)}
+            disabled={cart.length === 0}
+          >Finalizar Compra</Button>
         </div>
+
+        <CheckoutDialog
+          open={checkoutOpen}
+          onOpenChange={setCheckoutOpen}
+        />
       </SheetContent>
     </Sheet>
   );
